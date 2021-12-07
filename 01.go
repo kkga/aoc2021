@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-func calculateIncreases(input []int) int {
+func countIncreases(input []int) int {
 	var increaseCount int
 
 	for i, val := range input {
@@ -40,7 +40,7 @@ func Day01() {
 		measurements = append(measurements, measurement)
 	}
 
-	numOfTimesIncreases = calculateIncreases(measurements)
+	numOfTimesIncreases = countIncreases(measurements)
 
 	fmt.Println(numOfTimesIncreases)
 }
