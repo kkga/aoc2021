@@ -8,6 +8,20 @@ import (
 	"strconv"
 )
 
+func calculateIncreases(input []int) int {
+	var increaseCount int
+
+	for i, val := range input {
+		if i == 0 {
+			continue
+		}
+		if val > input[i-1] {
+			increaseCount += 1
+		}
+	}
+	return increaseCount
+}
+
 func Day01() {
 	input, err := os.Open("input/01.txt")
 	if err != nil {
@@ -26,14 +40,7 @@ func Day01() {
 		measurements = append(measurements, measurement)
 	}
 
-	for i, val := range measurements {
-		if i == 0 {
-			continue
-		}
-		if val > measurements[i-1] {
-			numOfTimesIncreases += 1
-		}
-	}
+	numOfTimesIncreases = calculateIncreases(measurements)
 
 	fmt.Println(numOfTimesIncreases)
 }
