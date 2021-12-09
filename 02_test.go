@@ -7,7 +7,7 @@ func TestApplyCommands(t *testing.T) {
 	want := Position{15, 60, 0}
 
 	p := &Position{}
-	p.ApplyCommands(commands)
+	p.ApplyCommands(commands, WithAim)
 
 	if p.x != want.x || p.y != want.y {
 		t.Errorf("want: %v, got: %v", want, p)
