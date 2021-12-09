@@ -36,15 +36,15 @@ func TestCommonBit(t *testing.T) {
 	}
 }
 
-func TestFilterByCriteria(t *testing.T) {
+func TestReduceByCriteria(t *testing.T) {
 	input := []string{"00100", "11110", "10110", "10111", "10101", "01111", "00111", "11100", "10000", "11001", "00010", "01010"}
 
 	var tests = []struct {
 		criteria BitCriteria
-		want     []string
+		want     string
 	}{
-		{LeastCommon, []string{"01010"}},
-		{MostCommon, []string{"10111"}},
+		{MostCommon, "10111"},
+		{LeastCommon, "01010"},
 	}
 
 	for _, tt := range tests {
