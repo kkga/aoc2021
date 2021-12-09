@@ -9,11 +9,47 @@ import (
 	"strings"
 )
 
-func CalcGammaRate(input []string) (binRate string, err error) {
+type BitCriteria int
+
+const (
+	LeastCommon BitCriteria = iota
+	MostCommon
+)
+
+func remove(slice []string, i int) []string {
+	return append(slice[:i], slice[i+1:]...)
+}
+
+func FilterByCriteria(input []string, criteria BitCriteria) ([]string, error) {
+	filtered := input
+
+	for i := 0; i < len(input[0]); i++ {
+		cb, err := CommonBit(input, i, criteria)
+		if err != nil {
+			return nil, err
+		}
+
+		for j := 0; j < len(filtered); j++ {
+			b, err := strconv.Atoi(string(filtered[j][i]))
+			if err != nil {
+				return nil, err
+			}
+			log.Println(filtered)
+
+			if b != cb {
+				filtered = remove(filtered, j)
+			}
+		}
+	}
+
+	return filtered, nil
+}
+
+func GammaRate(input []string) (binRate string, err error) {
 	var sb strings.Builder
 
 	for i := 0; i < len(input[0]); i++ {
-		b, err := MostCommonBit(input, i)
+		b, err := CommonBit(input, i, MostCommon)
 		if err != nil {
 			return "", err
 		}
@@ -24,7 +60,22 @@ func CalcGammaRate(input []string) (binRate string, err error) {
 	// log.Println("bin gam:", sb.String())
 
 	binRate = sb.String()
+	return
+}
 
+func EpsilonRate(input []string) (binRate string, err error) {
+	var sb strings.Builder
+
+	for i := 0; i < len(input[0]); i++ {
+		b, err := CommonBit(input, i, LeastCommon)
+		if err != nil {
+			return "", err
+		}
+		s := strconv.Itoa(b)
+		sb.WriteString(s)
+	}
+
+	binRate = sb.String()
 	return
 }
 
@@ -46,7 +97,7 @@ func GammaToEpsilon(gamma string) (binRate string, err error) {
 	return
 }
 
-func MostCommonBit(input []string, bitIndex int) (bit int, err error) {
+func CommonBit(input []string, bitIndex int, criteria BitCriteria) (bit int, err error) {
 	var bits []int
 
 	for _, val := range input {
@@ -69,12 +120,20 @@ func MostCommonBit(input []string, bitIndex int) (bit int, err error) {
 		}
 	}
 
-	if zeros > ones {
-		bit = 0
-	} else {
-		bit = 1
+	switch criteria {
+	case LeastCommon:
+		if zeros > ones {
+			bit = 1
+		} else {
+			bit = 0
+		}
+	case MostCommon:
+		if zeros > ones {
+			bit = 0
+		} else {
+			bit = 1
+		}
 	}
-
 	return
 }
 
@@ -94,11 +153,11 @@ func Day03() {
 		input = append(input, scanner.Text())
 	}
 
-	gamma, err := CalcGammaRate(input)
+	gamma, err := GammaRate(input)
 	if err != nil {
 		log.Fatal(err)
 	}
-	epsilon, err := GammaToEpsilon(gamma)
+	epsilon, err := EpsilonRate(input)
 	if err != nil {
 		log.Fatal(err)
 	}
