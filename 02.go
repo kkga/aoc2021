@@ -15,7 +15,14 @@ type Position struct {
 	aim int
 }
 
-func (p *Position) ApplyCommands(commands []string) error {
+type CommandOption int
+
+const (
+	WithAim CommandOption = iota
+	WithoutAim
+)
+
+func (p *Position) ApplyCommands(commands []string, opt CommandOption) error {
 	for _, command := range commands {
 		dir := strings.Split(command, " ")[0]
 		length, err := strconv.Atoi(strings.Split(command, " ")[1])
@@ -23,14 +30,25 @@ func (p *Position) ApplyCommands(commands []string) error {
 			return err
 		}
 
-		switch dir {
-		case "down":
-			p.aim += length
-		case "up":
-			p.aim -= length
-		case "forward":
-			p.x += length
-			p.y += p.aim * length
+		if opt == WithAim {
+			switch dir {
+			case "down":
+				p.aim += length
+			case "up":
+				p.aim -= length
+			case "forward":
+				p.x += length
+				p.y += p.aim * length
+			}
+		} else {
+			switch dir {
+			case "down":
+				p.y += length
+			case "up":
+				p.y -= length
+			case "forward":
+				p.x += length
+			}
 		}
 
 	}
@@ -61,11 +79,15 @@ func Day02() {
 		commands = append(commands, scanner.Text())
 	}
 
-	p := &Position{}
-	p.ApplyCommands(commands)
+	p1 := &Position{}
+	p1.ApplyCommands(commands, WithoutAim)
+	p1Multiplied := p1.Multiplied()
 
-	multiplied := p.Multiplied()
+	p2 := &Position{}
+	p2.ApplyCommands(commands, WithAim)
+	p2Multiplied := p2.Multiplied()
 
-	fmt.Println("Part 1:", multiplied)
+	fmt.Println("Part 1:", p1Multiplied)
+	fmt.Println("Part 2:", p2Multiplied)
 
 }
