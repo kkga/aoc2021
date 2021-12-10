@@ -21,7 +21,15 @@ func main() {
 		Day02()
 	case "03":
 		Day03()
+	case "04":
+		Day04()
 	default:
 		log.Fatalf("There's no solution for day %s", day)
+	}
+}
+
+func ch(err error) {
+	if err != nil {
+		log.Fatal(err)
 	}
 }
