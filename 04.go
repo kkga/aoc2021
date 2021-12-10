@@ -140,13 +140,35 @@ func Day04() {
 	boards := ReadBingoInput(string(b))
 	nums := ReadBingoNumOrder(string(b))
 
+	var lastNum int
+	var lastWinner *BingoBoard
+
+	var allBoardsWon = func(boards []*BingoBoard) bool {
+		for _, b := range boards {
+			if !b.Wins() {
+				return false
+			}
+		}
+		return true
+	}
+
 	for _, n := range nums {
+		// log.Println(n)
 		for _, b := range boards {
 			b.MarkNumber(n)
+			// log.Println(b.Wins())
 			if b.Wins() {
-				fmt.Println("Part 1:", b.Score(n))
-				os.Exit(0)
+				if lastWinner == nil {
+					fmt.Println("Part 1:", b.Score(n))
+				}
+				lastNum = n
+				lastWinner = b
+				if allBoardsWon(boards) {
+					fmt.Println("Part 2:", lastWinner.Score(lastNum))
+					os.Exit(0)
+				}
 			}
 		}
 	}
+
 }
