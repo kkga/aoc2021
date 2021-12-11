@@ -2,6 +2,8 @@ package main
 
 import (
 	"bufio"
+	"fmt"
+	"io/ioutil"
 	"strconv"
 	"strings"
 )
@@ -42,15 +44,43 @@ func NewDiagram(input string) (dia *Diagram) {
 
 	var d = &Diagram{lines, [][]int{}}
 
-	for y := 0; y < d.MaxY(); y++ {
-		var xx = make([]int, d.MaxX())
-		for x := 0; x < d.MaxX(); x++ {
+	for y := 0; y <= d.MaxY(); y++ {
+		var xx = make([]int, d.MaxX()+1)
+		for x := 0; x <= d.MaxX(); x++ {
 			xx[x] = 0
 		}
 		d.points = append(d.points, xx)
 	}
 
+	for _, l := range d.lines {
+		if l.x1 == l.x2 {
+			if l.y1 < l.y2 {
+				for y := l.y1; y <= l.y2; y++ {
+					d.AddPoint(l.x1, y)
+				}
+			} else {
+				for y := l.y1; y >= l.y2; y-- {
+					d.AddPoint(l.x1, y)
+				}
+			}
+		} else if l.y1 == l.y2 {
+			if l.x1 < l.x2 {
+				for x := l.x1; x <= l.x2; x++ {
+					d.AddPoint(x, l.y1)
+				}
+			} else {
+				for x := l.x1; x >= l.x2; x-- {
+					d.AddPoint(x, l.y1)
+				}
+			}
+		}
+	}
+
 	return d
+}
+
+func (d *Diagram) AddPoint(x, y int) {
+	d.points[y][x] += 1
 }
 
 func (d Diagram) MaxX() int {
@@ -77,4 +107,23 @@ var maxInt = func(ii []int) int {
 		}
 	}
 	return m
+}
+
+func Day05() {
+	b, err := ioutil.ReadFile("input/05.txt")
+	ch(err)
+
+	d := NewDiagram(string(b))
+
+	var overlappingPoints int
+
+	for _, p := range d.points {
+		for _, pp := range p {
+			if pp > 1 {
+				overlappingPoints++
+			}
+		}
+	}
+
+	fmt.Println("Part 1:", overlappingPoints)
 }

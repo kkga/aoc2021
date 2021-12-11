@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 )
@@ -55,6 +56,10 @@ func TestNewDiagram(t *testing.T) {
 		},
 	}
 	got := NewDiagram(testinput05)
+
+	// for _, p := range got.points {
+	// 	fmt.Println(p)
+	// }
 
 	// log.Println(got.points)
 
