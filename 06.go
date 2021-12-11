@@ -10,9 +10,6 @@ import (
 //go:embed input/06.txt
 var input string
 
-const fishDays1 = 80
-const fishDays2 = 256
-
 func Day06() {
 	fmt.Println("Part 1:", liveDays(input, 80))
 	fmt.Println("Part 2:", liveDays(input, 256))
