@@ -20,8 +20,7 @@ func liveDays(input string, days int) int {
 
 	for _, num := range strings.Split(input, ",") {
 		n, _ := strconv.Atoi(num)
-		daysLeft := n
-		state[daysLeft]++
+		state[n]++
 	}
 
 	for d := 0; d < days; d++ {
