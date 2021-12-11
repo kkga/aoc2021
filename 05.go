@@ -20,7 +20,14 @@ type Diagram struct {
 	points [][]int
 }
 
-func NewDiagram(input string) (dia *Diagram) {
+type DiagramOption int
+
+const (
+	WithDiagonals DiagramOption = iota
+	WithoutDiagonals
+)
+
+func NewDiagram(input string, opt DiagramOption) (dia *Diagram) {
 	s := bufio.NewScanner(strings.NewReader(input))
 	s.Split(bufio.ScanLines)
 
@@ -54,6 +61,7 @@ func NewDiagram(input string) (dia *Diagram) {
 
 	for _, l := range d.lines {
 		if l.x1 == l.x2 {
+			// vertical line
 			if l.y1 < l.y2 {
 				for y := l.y1; y <= l.y2; y++ {
 					d.AddPoint(l.x1, y)
@@ -64,6 +72,7 @@ func NewDiagram(input string) (dia *Diagram) {
 				}
 			}
 		} else if l.y1 == l.y2 {
+			// horizontal line
 			if l.x1 < l.x2 {
 				for x := l.x1; x <= l.x2; x++ {
 					d.AddPoint(x, l.y1)
@@ -71,6 +80,30 @@ func NewDiagram(input string) (dia *Diagram) {
 			} else {
 				for x := l.x1; x >= l.x2; x-- {
 					d.AddPoint(x, l.y1)
+				}
+			}
+		} else {
+			if opt == WithDiagonals {
+				if l.x1 < l.x2 {
+					y := l.y1
+					for x := l.x1; x <= l.x2; x++ {
+						d.AddPoint(x, y)
+						if l.y1 < l.y2 {
+							y++
+						} else {
+							y--
+						}
+					}
+				} else {
+					y := l.y1
+					for x := l.x1; x >= l.x2; x-- {
+						d.AddPoint(x, y)
+						if l.y1 < l.y2 {
+							y++
+						} else {
+							y--
+						}
+					}
 				}
 			}
 		}
@@ -113,17 +146,31 @@ func Day05() {
 	b, err := ioutil.ReadFile("input/05.txt")
 	ch(err)
 
-	d := NewDiagram(string(b))
+	d1 := NewDiagram(string(b), WithoutDiagonals)
 
-	var overlappingPoints int
+	var d1OverlappingPoints int
 
-	for _, p := range d.points {
+	for _, p := range d1.points {
 		for _, pp := range p {
 			if pp > 1 {
-				overlappingPoints++
+				d1OverlappingPoints++
 			}
 		}
 	}
 
-	fmt.Println("Part 1:", overlappingPoints)
+	fmt.Println("Part 1:", d1OverlappingPoints)
+
+	d2 := NewDiagram(string(b), WithDiagonals)
+
+	var d2OverlappingPoints int
+
+	for _, p := range d2.points {
+		for _, pp := range p {
+			if pp > 1 {
+				d2OverlappingPoints++
+			}
+		}
+	}
+
+	fmt.Println("Part 2:", d2OverlappingPoints)
 }
