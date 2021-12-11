@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"reflect"
 	"testing"
 )
@@ -97,9 +96,9 @@ func TestNewDiagramWithDiagonals(t *testing.T) {
 	}
 	got := NewDiagram(testinput05, WithDiagonals)
 
-	for _, p := range got.points {
-		fmt.Println(p)
-	}
+	// for _, p := range got.points {
+	// 	fmt.Println(p)
+	// }
 
 	if !reflect.DeepEqual(*got, want) {
 		t.Errorf("want %v, got %v", want, got)

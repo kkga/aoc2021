@@ -25,6 +25,8 @@ func main() {
 		Day04()
 	case "05":
 		Day05()
+	case "06":
+		Day06()
 	default:
 		log.Fatalf("There's no solution for day %s", day)
 	}
