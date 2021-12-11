@@ -7,7 +7,8 @@ import (
 	"strings"
 )
 
-const fishDays = 80
+const fishDays1 = 80
+const fishDays2 = 256
 
 type Lanternfish struct {
 	timer int
@@ -44,16 +45,29 @@ func Day06() {
 	b, err := os.ReadFile("input/06.txt")
 	ch(err)
 
-	fish := NewLanternfish(string(b))
+	fish1 := NewLanternfish(string(b))
 
-	for d := 1; d <= fishDays; d++ {
-		for _, f := range fish {
+	for d := 1; d <= fishDays1; d++ {
+		for _, f := range fish1 {
 			maybeFish := f.LiveADay()
 			if maybeFish != nil {
-				fish = append(fish, maybeFish)
+				fish1 = append(fish1, maybeFish)
 			}
 		}
 	}
 
-	fmt.Println("Part 1:", len(fish))
+	fmt.Println("Part 1:", len(fish1))
+
+	fish2 := NewLanternfish(string(b))
+
+	for d := 1; d <= fishDays2; d++ {
+		for _, f := range fish2 {
+			maybeFish := f.LiveADay()
+			if maybeFish != nil {
+				fish2 = append(fish2, maybeFish)
+			}
+		}
+	}
+
+	fmt.Println("Part 2:", len(fish2))
 }
