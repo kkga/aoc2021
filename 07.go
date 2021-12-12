@@ -12,12 +12,21 @@ func Day07() {
 	b, err := os.ReadFile("input/07.txt")
 	ch(err)
 
-	fuel := CheapestXMove(string(b))
+	fuel1 := CheapestXMove(string(b), WithoutIncrease)
+	fmt.Println("Part 1:", fuel1)
 
-	fmt.Println("Part 1:", fuel)
+	fuel2 := CheapestXMove(string(b), WithIncrease)
+	fmt.Println("Part 2:", fuel2)
 }
 
-func CheapestXMove(input string) int {
+type XMoveOption int
+
+const (
+	WithIncrease XMoveOption = iota
+	WithoutIncrease
+)
+
+func CheapestXMove(input string, opt XMoveOption) int {
 	var crabs []int
 
 	for _, s := range strings.Split(strings.TrimSpace(input), ",") {
@@ -43,8 +52,8 @@ func CheapestXMove(input string) int {
 	for x := minX; x <= maxX; x++ {
 		var cost int
 		for _, crab := range crabs {
-			fuel := int(math.Abs(float64(crab - x)))
-			cost += fuel
+			diff := int(math.Abs(float64(crab - x)))
+			cost += calcFuel(diff, opt)
 		}
 		if cost < minCost {
 			minCost = cost
@@ -52,4 +61,16 @@ func CheapestXMove(input string) int {
 	}
 
 	return minCost
+}
+
+func calcFuel(diff int, opt XMoveOption) int {
+	if opt == WithoutIncrease {
+		return diff
+	} else {
+		total := 0
+		for i := 1; i <= diff; i++ {
+			total += i
+		}
+		return total
+	}
 }
