@@ -21,8 +21,8 @@ func Day09() {
 	lp := LowPoints(string(input))
 	var risk int
 
-	for _, v := range lp {
-		risk += 1 + v
+	for _, p := range lp {
+		risk += 1 + p.val
 	}
 
 	fmt.Println("Part 1:", risk)
@@ -42,16 +42,14 @@ func Day09() {
 	fmt.Println("Part 2:", mlt)
 }
 
-func LowPoints(input string) (points map[Point]int) {
-	points = make(map[Point]int)
-
+func LowPoints(input string) (points []Point) {
 	hmap := heightmap(input)
 
 	for i, r := range hmap {
 		for j, n := range r {
 			p := Point{i, j, n}
 			if isLowPoint(hmap, p) {
-				points[p] = n
+				points = append(points, p)
 			}
 		}
 	}
@@ -66,13 +64,14 @@ func Basins(input string) (basins [][]Point) {
 	var basin func(b []Point, step int, ns []Point) []Point
 
 	basin = func(b []Point, step int, ns []Point) []Point {
-		if step == 8 {
+		if step == 9 {
 			return b
 		}
 
 		var nns []Point
 		for _, n := range ns {
-			if n.val == step+1 {
+			if n.val == step {
+				// fmt.Println(step)
 				b = append(b, n)
 				for _, nn := range neighbors(hmap, n) {
 					if !hasPoint(nns, nn) {
@@ -81,11 +80,12 @@ func Basins(input string) (basins [][]Point) {
 				}
 			}
 		}
+
 		return basin(b, step+1, nns)
 	}
 
-	for p := range lp {
-		b := basin([]Point{p}, p.val, neighbors(hmap, p))
+	for _, p := range lp {
+		b := basin([]Point{p}, p.val+1, neighbors(hmap, p))
 		basins = append(basins, b)
 	}
 
