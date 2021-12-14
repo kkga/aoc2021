@@ -35,7 +35,6 @@ func Day09() {
 
 	mlt := 1
 	for _, b := range basins[:3] {
-		fmt.Println(len(b))
 		mlt *= len(b)
 	}
 
@@ -61,35 +60,56 @@ func Basins(input string) (basins [][]Point) {
 	lp := LowPoints(input)
 	hmap := heightmap(input)
 
-	var basin func(b []Point, step int, ns []Point) []Point
-
-	basin = func(b []Point, step int, ns []Point) []Point {
-		if step == 9 {
-			return b
-		}
-
-		var nns []Point
-		for _, n := range ns {
-			if n.val == step {
-				// fmt.Println(step)
-				b = append(b, n)
-				for _, nn := range neighbors(hmap, n) {
-					if !hasPoint(nns, nn) {
-						nns = append(nns, nn)
-					}
-				}
-			}
-		}
-
-		return basin(b, step+1, nns)
-	}
+	// Tried a recursive approach first, but something's wrong
+	//
+	// var basin func(b []Point, step int, ns []Point) []Point
+	// basin = func(b []Point, step int, ns []Point) []Point {
+	// 	if step == 9 {
+	// 		return b
+	// 	}
+	// 	var nns []Point
+	// 	for _, n := range ns {
+	// 		if n.val == step {
+	// 			// fmt.Println(step)
+	// 			b = append(b, n)
+	// 			for _, nn := range neighbors(hmap, n) {
+	// 				if !hasPoint(nns, nn) {
+	// 					nns = append(nns, nn)
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	// 	return basin(b, step+1, nns)
+	// }
 
 	for _, p := range lp {
-		b := basin([]Point{p}, p.val+1, neighbors(hmap, p))
-		basins = append(basins, b)
+		basin := []Point{p}
+		ns := neighbors(hmap, p)
+		step := p.val + 1
+
+		for len(ns) > 0 {
+			if step == 9 {
+				break
+			}
+			for _, n := range ns {
+				if n.val == step {
+					if !hasPoint(basin, n) {
+						basin = append(basin, n)
+					}
+					ns = append(ns, neighbors(hmap, n)...)
+				}
+			}
+			step++
+		}
+
+		basins = append(basins, basin)
 	}
 
 	return
+}
+
+func remove(slice []Point, s int) []Point {
+	return append(slice[:s], slice[s+1:]...)
 }
 
 func hasPoint(points []Point, p Point) bool {
