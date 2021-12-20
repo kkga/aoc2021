@@ -25,6 +25,9 @@ func TestStep(t *testing.T) {
 	want100step := 1656
 	var got100step int
 
+	wantFlashsyncStep := 195
+	gotFlashsyncStep := 1
+
 	for i := 1; i <= 10; i++ {
 		got10step += step(o)
 		// if i%10 == 0 {
@@ -43,12 +46,25 @@ func TestStep(t *testing.T) {
 		// }
 	}
 
+	o = newOctogrid(testinput11)
+
+	for ; ; gotFlashsyncStep++ {
+		_ = step(o)
+		if o.isFlashsync() {
+			break
+		}
+	}
+
 	if !cmp.Equal(want10step, got10step) {
 		t.Error(cmp.Diff(want10step, got10step))
 	}
 
 	if !cmp.Equal(want100step, got100step) {
 		t.Error(cmp.Diff(want100step, got100step))
+	}
+
+	if !cmp.Equal(wantFlashsyncStep, gotFlashsyncStep) {
+		t.Error(cmp.Diff(wantFlashsyncStep, gotFlashsyncStep))
 	}
 
 }

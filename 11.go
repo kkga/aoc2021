@@ -26,6 +26,16 @@ func Day11() {
 	}
 
 	fmt.Println("Part 1:", flashes)
+
+	o = newOctogrid(string(input))
+	flashsyncStep := 1
+	for ; ; flashsyncStep++ {
+		_ = step(o)
+		if o.isFlashsync() {
+			break
+		}
+	}
+	fmt.Println("Part 2:", flashsyncStep)
 }
 
 func newOctogrid(input string) octogrid {
@@ -93,6 +103,17 @@ func (o octogrid) String() string {
 	}
 	sb.WriteString("\n")
 	return sb.String()
+}
+
+func (o octogrid) isFlashsync() bool {
+	for row := range o {
+		for col := range o[row] {
+			if o[row][col] != 0 {
+				return false
+			}
+		}
+	}
+	return true
 }
 
 func diagonalNeighbors(grid [][]int, p position) (neighbors []position) {
